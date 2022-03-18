@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react';
+import { Routes, Route } from 'react-router';
+import { Home } from './components/Home';
+import { Login } from './components/Login';
+import { Callback } from './components/Callback';
+import { Logout } from './components/Logout';
+import { Edit } from './components/Edit';
+import { EditingHistory } from './components/EditingHistory';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends Component {
+  static displayName = App.name;
+
+  render() {
+    return (
+      <Routes>
+        <Route exact path='/' element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/callback' element={<Callback />} />
+        <Route path='/logout' element={<Logout />} />
+        <Route path='/edit' element={<Edit />} />
+        <Route path='/history' element={<EditingHistory />} />
+      </Routes>
+    );
+  }
 }
-
-export default App;
