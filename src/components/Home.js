@@ -35,7 +35,8 @@ export class Home extends Component {
       maxRoomPower: "",
       sort: "PublishedAt",
       page: 1,
-      pageNumber: 1
+      pageNumber: 1,
+      resultNumber: 0
     };
   }
 
@@ -44,7 +45,7 @@ export class Home extends Component {
     this.handleUnselectStage();
     this.handleUnselectWeapon();
     this.handleUnselectChannel();
-    this.handleSearch();
+    this.search();
 
     this.handleGetChannels();
   }
@@ -60,7 +61,7 @@ export class Home extends Component {
       });
   }
 
-  handleSearch = () => {
+  search = () => {
     fetch(getServerUrl() + "/api/Battle/search" +
       "?channel=" + this.state.channel +
       "&rule=" + this.state.rule +
@@ -69,7 +70,7 @@ export class Home extends Component {
       "&minRoomPower=" + this.state.minRoomPower +
       "&maxRoomPower=" + this.state.maxRoomPower +
       "&sort=" + this.state.sort +
-      "&page=" + this.state.page, {
+      "&page=" +  this.state.page, {
       headers: {
         'x-user-id': this.state.userId,
         'x-session-id': this.state.sessionId
@@ -80,8 +81,10 @@ export class Home extends Component {
         console.log(json);
         this.setState({
           battles: json.battles,
-          pageNumber: json.pageNumber
+          pageNumber: json.pageNumber,
+          resultNumber: json.resultNumber
         });
+        if (json.pageNumber === 0) this.setState({page: 0});
       });
   }
 
@@ -196,12 +199,22 @@ export class Home extends Component {
     this.setState({ sort: event.target.value });
   }
 
+  handleClickSearch = () => {
+    this.setState({
+      page: 1,
+      pageNumber: "-",
+      resultNumber: "-"
+    }, () => {
+      this.search();
+    });
+  }
+
   handlePrevPage = () => {
     let page = this.state.page;
     if (page > 1) {
       page = page - 1;
       this.setState({ page: page }, () => {
-        this.handleSearch();
+        this.search();
       });
     }
   }
@@ -211,7 +224,7 @@ export class Home extends Component {
     if (page < this.state.pageNumber) {
       page = page + 1;
       this.setState({ page: page }, () => {
-        this.handleSearch();
+        this.search();
       });
     }
   }
@@ -233,7 +246,7 @@ export class Home extends Component {
       .then(res => {
         if (res.status === 200) {
           toast.success("お気に入り登録しました。")
-          this.handleSearch();
+          this.search();
         }
       });
   }
@@ -255,7 +268,7 @@ export class Home extends Component {
       .then(res => {
         if (res.status === 200) {
           toast.success("お気に入り解除しました。")
-          this.handleSearch();
+          this.search();
         }
       });
   }
@@ -434,7 +447,7 @@ export class Home extends Component {
         </Container>
 
         <Container>
-          <Button variant="primary" type="button" onClick={this.handleSearch}>
+          <Button variant="primary" type="button" onClick={this.handleClickSearch}>
             検索
           </Button>
         </Container>
@@ -490,6 +503,11 @@ export class Home extends Component {
                 <Pagination.Prev onClick={this.handlePrevPage} />
                 <Pagination.Next onClick={this.handleNextPage} />
               </Pagination>
+            </Col>
+          </Row>
+          <Row className="justify-content-center">
+            <Col sm="auto">
+            （{this.state.page}/{this.state.pageNumber}ページ：全{this.state.resultNumber}件）
             </Col>
           </Row>
         </Container>

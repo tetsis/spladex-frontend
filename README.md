@@ -12,7 +12,7 @@
                    +-----------+
 ```
 
-- Frontend
+- Frontend (here)
     - [Repo](https://github.com/tetsis/splatoon2-video-index-frontend)
     - React
 - API
