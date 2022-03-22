@@ -13,13 +13,13 @@
 ```
 
 - Frontend
-    - [Repo]()
+    - [Repo](https://github.com/tetsis/splatoon2-video-index-frontend)
     - React
 - API
-    - [Repo]()
+    - [Repo](https://github.com/tetsis/splatoon2-video-index-api)
     - ASP.NET
 - Core
-    - [Repo]()
+    - [Repo](https://github.com/tetsis/splatoon2-video-index-core)
     - C#
 - RDB
     - MySQL
