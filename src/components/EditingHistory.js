@@ -41,10 +41,7 @@ export class EditingHistory extends Component {
     }
 
     let contentType;
-    if (history.contentType === "Channel") {
-      contentType = "チャンネル";
-    }
-    else if (history.contentType === "Video") {
+    if (history.contentType === "Video") {
       contentType = "動画";
     }
 
@@ -56,6 +53,14 @@ export class EditingHistory extends Component {
   toStringFromNow(time) {
     moment.tz.setDefault("UTC");
     return moment(time).fromNow();
+  }
+
+  toStringFromContent(content) {
+    let object = JSON.parse(content);
+    let id = object.Id;
+    let title = object.VideoInfo.Title;
+
+    return "ID: " + id + " 「" + title + "」";
   }
 
   render() {
@@ -76,8 +81,9 @@ export class EditingHistory extends Component {
                   <Col>
                     <Image roundedCircle height="20px" src={history.userImage} />
                     {this.toStringFromHistory(history)}
+                    <br />
                     <small>
-                      {history.content}
+                      {this.toStringFromContent(history.content)}
                     </small>
                   </Col>
                 </Row>

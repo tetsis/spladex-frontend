@@ -3,7 +3,6 @@ import { Container, Tabs, Tab } from 'react-bootstrap';
 import { Toaster } from 'react-hot-toast';
 import { Header } from './Header';
 import { EditVideo } from './EditVideo';
-import { EditChannel } from './EditChannel';
 import { EditUser } from './EditUser';
 import getServerUrl from '../functions/getServerUrl';
 
@@ -87,14 +86,6 @@ export class Edit extends Component {
                 canDelete={this.state.canDelete}
                 canImportAndExport={this.state.canImportAndExport}
                 />
-            </Tab>
-            <Tab eventKey="channel" title="チャンネル">
-              <EditChannel
-                userId={this.state.userId}
-                sessionId={this.state.sessionId}
-                canDelete={this.state.canDelete}
-                canImportAndExport={this.state.canImportAndExport}
-              />
             </Tab>
             <Tab eventKey="user" title="ユーザ" disabled={!this.state.canSeeUser}>
               <EditUser
