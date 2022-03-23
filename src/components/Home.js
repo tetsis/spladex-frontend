@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Form, Card, Button, Pagination, Stack, Modal, Image } from 'react-bootstrap';
+import { Container, Row, Col, Form, Card, Button, Pagination, Stack, Image } from 'react-bootstrap';
 import { Header } from './Header';
 import { Star, StarFill, Search } from 'react-bootstrap-icons';
 import toast, { Toaster } from 'react-hot-toast';
 import { RuleModal } from './modals/RuleModal';
 import { StageModal } from './modals/StageModal';
 import { WeaponModal } from './modals/WeaponModal';
+import { ChannelModal } from './modals/ChannelModal';
 import toDateStringFromDateTime from '../functions/toDateStringFromDateTime';
 import getServerUrl from '../functions/getServerUrl';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -26,7 +27,6 @@ export class Home extends Component {
       weapon: "",
       weaponName: "",
       showWeaponModal: false,
-      channels: [],
       channel: "",
       channelName: "",
       channelThumbnail: "",
@@ -46,19 +46,6 @@ export class Home extends Component {
     this.handleUnselectWeapon();
     this.handleUnselectChannel();
     this.search();
-
-    this.handleGetChannels();
-  }
-
-  handleGetChannels = () => {
-    fetch(getServerUrl() + "/api/Channel")
-      .then(res => res.json())
-      .then(json => {
-        console.log(json);
-        this.setState({
-          channels: json
-        });
-      });
   }
 
   search = () => {
@@ -164,7 +151,7 @@ export class Home extends Component {
   }
 
   // チャンネル
-  handleClickChannel = (channel) => {
+  handleSelectChannel = (channel) => {
     this.setState({
       channel: channel.id,
       channelName: channel.channelInfo.name,
@@ -299,37 +286,12 @@ export class Home extends Component {
           handleUnselect={this.handleUnselectWeapon}
         />
 
-        <Modal size="lg" show={this.state.showChannelModal} onHide={this.handleCloseChannelModal}>
-          <Modal.Header closeButton>
-            <Modal.Title>チャンネル</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="show-grid">
-            <Container>
-              <Row sm={8} md={12} className="g-4">
-              {this.state.channels.map((channel, index) => (
-                <Col key={index}>
-                  <Card className="mt-3 mb-3" onClick={() => this.handleClickChannel(channel)}>
-                      <Card.Img variant="top" src={channel.channelInfo.thumbnail} />
-                    <Card.Text>
-                      {channel.channelInfo.name}
-                    </Card.Text>
-                  </Card>
-                </Col>
-              ))}
-              </Row>
-            </Container>
-          </Modal.Body>
-          <Modal.Footer>
-            {this.state.channel !== "all" &&
-              <Button variant="outline-secondary" onClick={this.handleUnselectChannel}>
-                選択を解除
-              </Button>
-            }
-            <Button variant="secondary" onClick={this.handleCloseChannelModal}>
-              閉じる
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <ChannelModal
+          showModal={this.state.showChannelModal}
+          handleCloseModal={this.handleCloseChannelModal}
+          handleSelect={this.handleSelectChannel}
+          handleUnselect={this.handleUnselectChannel}
+        />
 
         <Header />
 
