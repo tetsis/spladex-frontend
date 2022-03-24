@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Form, Button, Card, Stack } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, Stack, Image, ListGroup } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import { Plus, Search } from 'react-bootstrap-icons';
 import { RuleModal } from './modals/RuleModal';
 import { StageModal } from './modals/StageModal';
 import { WeaponModal } from './modals/WeaponModal';
+import { ChannelModal } from './modals/ChannelModal';
 import toDateStringFromDateTime from '../functions/toDateStringFromDateTime';
 import toTimeStringFromSeconds from '../functions/toTimeStringFromSeconds';
 import toSecondsFromTimeString from '../functions/toSecondsFromTimeString';
@@ -23,7 +24,60 @@ export class EditVideo extends Component {
       showRuleModal: false,
       showStageModal: false,
       showWeaponModal: false,
+      publishedFrom: null,
+      channel: "",
+      channelName: "",
+      channelThumbnail: "",
+      showChannelModal: false,
+      videos: []
     };
+  }
+
+  componentDidMount() {
+    let date = new Date();
+    date.setMonth(date.getMonth() - 1);
+    console.log(toDateStringFromDateTime(date, "-"));
+    this.setState({publishedFrom: toDateStringFromDateTime(date, "-")});
+  }
+
+  handleGetVideos = () => {
+    fetch(getServerUrl() + "/api/Video" +
+      "?publishedFrom=" + this.state.publishedFrom +
+      "&channel=" + this.state.channel)
+      .then(res => res.json())
+      .then(json => {
+        console.log(json);
+        this.setState({
+          videos: json
+        });
+      });
+  }
+
+  // チャンネル
+  handleSelectChannel = (channel) => {
+    this.setState({
+      channel: channel.id,
+      channelName: channel.channelInfo.name,
+      channelThumbnail: channel.channelInfo.thumbnail,
+      showChannelModal: false
+    }, () => {
+      this.handleGetVideos();
+    });
+
+  }
+  handleShowChannelModal = () => {
+    this.setState({ showChannelModal: true });
+  }
+  handleCloseChannelModal = () => {
+    this.setState({ showChannelModal: false });
+  }
+
+  handleChangePublishedFrom = (event) => {
+    this.setState({
+      publishedFrom: event.target.value
+    }, () => {
+      this.handleGetVideos();
+    });
   }
 
   handleChangeVideoId = (event) => {
@@ -337,6 +391,12 @@ export class EditVideo extends Component {
           handleSelect={this.handleSelectWeapon}
         />
 
+        <ChannelModal
+          showModal={this.state.showChannelModal}
+          handleCloseModal={this.handleCloseChannelModal}
+          handleSelect={this.handleSelectChannel}
+        />
+
         <Form>
           {this.state.canAddVideo === false &&
             <>
@@ -517,6 +577,69 @@ export class EditVideo extends Component {
             </Stack>
           }
         </Form>
+
+        <h4 className="mt-5">動画一覧</h4>
+
+        <Container className="mt-3">
+          <Row>
+            <Col>
+              <Card>
+                <Card.Body>
+                  <Card.Title>
+                    <div className="d-flex justify-content-between align-items-center">
+                      投稿日（以降）
+                    </div>
+                  </Card.Title>
+                  <Card.Text>
+                    <Form.Control type="date" value={this.state.publishedFrom} onChange={(e) => this.handleChangePublishedFrom(e)} />
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col>
+              <Card>
+                <Card.Body>
+                  <Card.Title>
+                    <div className="d-flex justify-content-between align-items-center">
+                      <div>
+                        チャンネル
+                      </div>
+                      <div>
+                        <Button variant="primary" type="button" onClick={this.handleShowChannelModal}>
+                          <Search />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card.Title>
+                  <Card.Text>
+                    <Image roundedCircle height="30px" src={this.state.channelThumbnail} />
+                    {this.state.channelName}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+
+        <Container className="mt-3">
+          <ListGroup variant="flush">
+            {this.state.videos.map((video, index) => (
+              <ListGroup.Item key={index}>
+                <Row>
+                  <Col sm="2">
+                    <Image height="80px" src={video.videoInfo.thumbnail} />
+                  </Col>
+                  <Col>
+                    {video.videoInfo.title}
+                  </Col>
+                  <Col sm="1">
+                    {toDateStringFromDateTime(video.videoInfo.publishedAt)}
+                  </Col>
+                </Row>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Container>
       </>
     )
   }
