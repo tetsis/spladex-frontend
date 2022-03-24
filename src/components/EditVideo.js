@@ -34,50 +34,11 @@ export class EditVideo extends Component {
   }
 
   componentDidMount() {
+    // 投稿日の初期設定
     let date = new Date();
     date.setMonth(date.getMonth() - 1);
     console.log(toDateStringFromDateTime(date, "-"));
     this.setState({publishedFrom: toDateStringFromDateTime(date, "-")});
-  }
-
-  handleGetVideos = () => {
-    fetch(getServerUrl() + "/api/Video" +
-      "?publishedFrom=" + this.state.publishedFrom +
-      "&channel=" + this.state.channel)
-      .then(res => res.json())
-      .then(json => {
-        console.log(json);
-        this.setState({
-          videos: json
-        });
-      });
-  }
-
-  // チャンネル
-  handleSelectChannel = (channel) => {
-    this.setState({
-      channel: channel.id,
-      channelName: channel.channelInfo.name,
-      channelThumbnail: channel.channelInfo.thumbnail,
-      showChannelModal: false
-    }, () => {
-      this.handleGetVideos();
-    });
-
-  }
-  handleShowChannelModal = () => {
-    this.setState({ showChannelModal: true });
-  }
-  handleCloseChannelModal = () => {
-    this.setState({ showChannelModal: false });
-  }
-
-  handleChangePublishedFrom = (event) => {
-    this.setState({
-      publishedFrom: event.target.value
-    }, () => {
-      this.handleGetVideos();
-    });
   }
 
   handleChangeVideoId = (event) => {
@@ -368,6 +329,46 @@ export class EditVideo extends Component {
   }
   handleCloseWeaponModal = () => {
     this.setState({ showWeaponModal: false });
+  }
+
+  // チャンネル
+  handleSelectChannel = (channel) => {
+    this.setState({
+      channel: channel.id,
+      channelName: channel.channelInfo.name,
+      channelThumbnail: channel.channelInfo.thumbnail,
+      showChannelModal: false
+    }, () => {
+      this.handleGetVideos();
+    });
+  }
+  handleShowChannelModal = () => {
+    this.setState({ showChannelModal: true });
+  }
+  handleCloseChannelModal = () => {
+    this.setState({ showChannelModal: false });
+  }
+
+  // 投稿日
+  handleChangePublishedFrom = (event) => {
+    this.setState({
+      publishedFrom: event.target.value
+    }, () => {
+      this.handleGetVideos();
+    });
+  }
+
+  handleGetVideos = () => {
+    fetch(getServerUrl() + "/api/Video" +
+      "?publishedFrom=" + this.state.publishedFrom +
+      "&channel=" + this.state.channel)
+      .then(res => res.json())
+      .then(json => {
+        console.log(json);
+        this.setState({
+          videos: json
+        });
+      });
   }
 
   render() {
