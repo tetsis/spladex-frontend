@@ -31,5 +31,6 @@
 ## Development
 ```
 $Env:REACT_APP_SERVER_URL="https://localhost:5050"
+npm install (first time only)
 npm start
 ```

@@ -41,6 +41,12 @@ export class EditVideo extends Component {
     this.setState({publishedFrom: toDateStringFromDateTime(date, "-")});
   }
 
+  handleEditVideo = (video) => {
+    this.setState({ videoId: video.id }, () => {
+      this.handleSearchVideo();
+    });
+  }
+
   handleChangeVideoId = (event) => {
     this.setState({ videoId: event.target.value });
   }
@@ -101,12 +107,18 @@ export class EditVideo extends Component {
     let battles = this.state.battles;
     battles.push({
       seconds: "0:00",
-      rule: battles.length > 0 ? battles.slice(-1)[0].rule : "SplatZones",
-      ruleName: battles.length > 0 ? battles.slice(-1)[0].ruleName : "ガチエリア",
-      stage: battles.length > 0 ? battles.slice(-1)[0].stage : "TheReef",
-      stageName: battles.length > 0 ? battles.slice(-1)[0].stageName : "バッテラストリート",
-      weapon: battles.length > 0 ? battles.slice(-1)[0].weapon : "Sploosh_o_matic",
-      weaponName: battles.length > 0 ? battles.slice(-1)[0].weaponName : "ボールドマーカー"
+      rule: {
+        id: battles.length > 0 ? battles.slice(-1)[0].rule.id : "SplatZones",
+        name: battles.length > 0 ? battles.slice(-1)[0].rule.name : "ガチエリア"
+      },
+      stage: {
+        id: battles.length > 0 ? battles.slice(-1)[0].stage.id : "TheReef",
+        name: battles.length > 0 ? battles.slice(-1)[0].stage.name : "バッテラストリート"
+      },
+      weapon: {
+        id: battles.length > 0 ? battles.slice(-1)[0].weapon.id : "Sploosh_o_matic",
+        name: battles.length > 0 ? battles.slice(-1)[0].weapon.name : "ボールドマーカー"
+      }
     });
     this.setState({ battles: battles });
   }
@@ -121,11 +133,16 @@ export class EditVideo extends Component {
     let data = {
       userId: this.props.userId,
       sessionId: this.props.sessionId,
-      videoId: this.state.videoId,
-      battles: this.state.battles
+      video: {
+        id: this.state.videoId,
+        battles: this.state.battles
+      }
     };
     for (let i = 0; i < data.battles.length; i++) {
       data.battles[i].seconds = toSecondsFromTimeString(data.battles[i].seconds);
+      data.battles[i].rule = data.battles[i].rule.id;
+      data.battles[i].stage = data.battles[i].stage.id;
+      data.battles[i].weapon = data.battles[i].weapon.id;
     }
     console.log(data);
     fetch(getServerUrl() + "/api/Video", {
@@ -254,8 +271,7 @@ export class EditVideo extends Component {
           let data = {
             userId: this.props.userId,
             sessionId: this.props.sessionId,
-            videoId: video.id,
-            battles: video.battles
+            video: video
           };
           console.log(data);
           await fetch(getServerUrl() + "/api/Video", {
@@ -274,8 +290,8 @@ export class EditVideo extends Component {
   // ルール
   handleSelectRule = (rule) => {
     let battle = this.state.nowBattle;
-    battle.rule = rule.id;
-    battle.ruleName = rule.name
+    battle.rule.id = rule.id;
+    battle.rule.name = rule.name
     this.setState({
       nowBattle: battle,
       showRuleModal: false
@@ -294,8 +310,8 @@ export class EditVideo extends Component {
   // ステージ
   handleSelectStage = (stage) => {
     let battle = this.state.nowBattle;
-    battle.stage = stage.id;
-    battle.stageName = stage.name
+    battle.stage.id = stage.id;
+    battle.stage.name = stage.name
     this.setState({
       nowBattle: battle,
       showStageModal: false
@@ -314,8 +330,8 @@ export class EditVideo extends Component {
   // ブキ
   handleSelectWeapon = (weapon) => {
     let battle = this.state.nowBattle;
-    battle.weapon = weapon.id;
-    battle.weaponName = weapon.name
+    battle.weapon.id = weapon.id;
+    battle.weapon.name = weapon.name
     this.setState({
       nowBattle: battle,
       showWeaponModal: false
@@ -331,7 +347,7 @@ export class EditVideo extends Component {
     this.setState({ showWeaponModal: false });
   }
 
-  // チャンネル
+  // 動画一覧：チャンネル
   handleSelectChannel = (channel) => {
     this.setState({
       channel: channel.id,
@@ -349,7 +365,7 @@ export class EditVideo extends Component {
     this.setState({ showChannelModal: false });
   }
 
-  // 投稿日
+  // 動画一覧：投稿日
   handleChangePublishedFrom = (event) => {
     this.setState({
       publishedFrom: event.target.value
@@ -472,7 +488,7 @@ export class EditVideo extends Component {
                                   </div>
                                 </Card.Title>
                                 <Card.Text>
-                                  {battle.ruleName}
+                                  {battle.rule.name}
                                 </Card.Text>
                               </Card.Body>
                             </Card>
@@ -493,7 +509,7 @@ export class EditVideo extends Component {
                                   </div>
                                 </Card.Title>
                                 <Card.Text>
-                                  {battle.stageName}
+                                  {battle.stage.name}
                                 </Card.Text>
                               </Card.Body>
                             </Card>
@@ -514,7 +530,7 @@ export class EditVideo extends Component {
                                   </div>
                                 </Card.Title>
                                 <Card.Text>
-                                  {battle.weaponName}
+                                  {battle.weapon.name}
                                 </Card.Text>
                               </Card.Body>
                             </Card>
@@ -635,6 +651,11 @@ export class EditVideo extends Component {
                   </Col>
                   <Col sm="1">
                     {toDateStringFromDateTime(video.videoInfo.publishedAt)}
+                  </Col>
+                  <Col sm="auto">
+                    <Button variant="primary" type="button" onClick={() => this.handleEditVideo(video)}>
+                      編集
+                    </Button>
                   </Col>
                 </Row>
               </ListGroup.Item>
