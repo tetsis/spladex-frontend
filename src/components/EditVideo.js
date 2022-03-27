@@ -38,12 +38,13 @@ export class EditVideo extends Component {
     let date = new Date();
     date.setMonth(date.getMonth() - 1);
     console.log(toDateStringFromDateTime(date, "-"));
-    this.setState({publishedFrom: toDateStringFromDateTime(date, "-")});
+    this.setState({ publishedFrom: toDateStringFromDateTime(date, "-") });
   }
 
   handleEditVideo = (video) => {
     this.setState({ videoId: video.id }, () => {
       this.handleSearchVideo();
+      window.scroll({ top: 0, behavior: 'smooth' })
     });
   }
 
@@ -229,16 +230,16 @@ export class EditVideo extends Component {
 
   handleExportVideo = () => {
     fetch(getServerUrl() + "/api/Video/export", {
-        headers: {
-          'x-user-id': this.props.userId,
-          'x-session-id': this.props.sessionId
-        }
+      headers: {
+        'x-user-id': this.props.userId,
+        'x-session-id': this.props.sessionId
+      }
     })
       .then(res => res.json())
       .then(json => {
         console.log(json);
-        let blob = new Blob([ JSON.stringify(json, null, 2) ], { "type" : "text/plain" });
-        let url =  window.URL.createObjectURL(blob);
+        let blob = new Blob([JSON.stringify(json, null, 2)], { "type": "text/plain" });
+        let url = window.URL.createObjectURL(blob);
 
         const a = document.createElement("a");
         document.body.appendChild(a);
@@ -263,7 +264,7 @@ export class EditVideo extends Component {
     input.addEventListener("change", () => {
       let reader = new FileReader();
       reader.readAsText(input.files[0], "utf-8");
-      reader.onload = async() => {
+      reader.onload = async () => {
         let videos = JSON.parse(reader.result);
 
         for (let i = 0; i < videos.length; i++) {
