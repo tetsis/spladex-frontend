@@ -139,11 +139,11 @@ export class EditVideo extends Component {
         battles: this.state.battles
       }
     };
-    for (let i = 0; i < data.battles.length; i++) {
-      data.battles[i].seconds = toSecondsFromTimeString(data.battles[i].seconds);
-      data.battles[i].rule = data.battles[i].rule.id;
-      data.battles[i].stage = data.battles[i].stage.id;
-      data.battles[i].weapon = data.battles[i].weapon.id;
+    for (let i = 0; i < data.video.battles.length; i++) {
+      data.video.battles[i].seconds = toSecondsFromTimeString(data.battles[i].seconds);
+      data.video.battles[i].rule = data.video.battles[i].rule.id;
+      data.video.battles[i].stage = data.video.battles[i].stage.id;
+      data.video.battles[i].weapon = data.video.battles[i].weapon.id;
     }
     console.log(data);
     fetch(getServerUrl() + "/api/Video", {
