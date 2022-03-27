@@ -140,7 +140,7 @@ export class EditVideo extends Component {
       }
     };
     for (let i = 0; i < data.video.battles.length; i++) {
-      data.video.battles[i].seconds = toSecondsFromTimeString(data.battles[i].seconds);
+      data.video.battles[i].seconds = toSecondsFromTimeString(data.video.battles[i].seconds);
       data.video.battles[i].rule = data.video.battles[i].rule.id;
       data.video.battles[i].stage = data.video.battles[i].stage.id;
       data.video.battles[i].weapon = data.video.battles[i].weapon.id;
