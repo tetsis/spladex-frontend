@@ -37,6 +37,7 @@ export class StageModal extends Component {
               {this.state.stages.map((stage, index) => (
                 <Col key={index}>
                   <Card className="mt-3 mb-3" onClick={() => this.props.handleSelect(stage)}>
+                    <Card.Img variant="top" src={"images/" + stage.id + ".png"} />
                     <Card.Text>
                       {stage.name}
                     </Card.Text>
