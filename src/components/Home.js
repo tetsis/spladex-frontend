@@ -63,8 +63,19 @@ export class Home extends Component {
         'x-session-id': this.state.sessionId
       }
     })
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 200) {
+          return res.json()
+        }
+      })
       .then(json => {
+        if (json === undefined) {
+          this.setState({
+            battles: [],
+          });
+          return;
+        }
+
         console.log(json);
         this.setState({
           battles: json.battles,
@@ -90,6 +101,8 @@ export class Home extends Component {
       rule: rule.id,
       ruleName: rule.name,
       showRuleModal: false
+    }, () => {
+      this.handleSearch();
     });
   }
   handleUnselectRule = () => {
@@ -97,6 +110,8 @@ export class Home extends Component {
       rule: "all",
       ruleName: "すべて",
       showRuleModal: false
+    }, () => {
+      this.handleSearch();
     });
   }
   handleShowRuleModal = () => {
@@ -112,6 +127,8 @@ export class Home extends Component {
       stage: stage.id,
       stageName: stage.name,
       showStageModal: false
+    }, () => {
+      this.handleSearch();
     });
   }
   handleUnselectStage = () => {
@@ -119,6 +136,8 @@ export class Home extends Component {
       stage: "all",
       stageName: "すべて",
       showStageModal: false
+    }, () => {
+      this.handleSearch();
     });
   }
   handleShowStageModal = () => {
@@ -134,6 +153,8 @@ export class Home extends Component {
       weapon: weapon.id,
       weaponName: weapon.name,
       showWeaponModal: false
+    }, () => {
+      this.handleSearch();
     });
   }
   handleUnselectWeapon = () => {
@@ -141,6 +162,8 @@ export class Home extends Component {
       weapon: "all",
       weaponName: "すべて",
       showWeaponModal: false
+    }, () => {
+      this.handleSearch();
     });
   }
   handleShowWeaponModal = () => {
@@ -157,6 +180,8 @@ export class Home extends Component {
       channelName: channel.channelInfo.name,
       channelThumbnail: channel.channelInfo.thumbnail,
       showChannelModal: false
+    }, () => {
+      this.handleSearch();
     });
   }
   handleUnselectChannel = () => {
@@ -165,6 +190,8 @@ export class Home extends Component {
       channelName: "すべて",
       channelThumbnail: "",
       showChannelModal: false
+    }, () => {
+      this.handleSearch();
     });
   }
   handleShowChannelModal = () => {
@@ -174,19 +201,28 @@ export class Home extends Component {
     this.setState({ showChannelModal: false });
   }
 
+  // 部屋パワー
   handleChangeMinRoomPower = (event) => {
     this.setState({ minRoomPower: event.target.value });
   }
-
   handleChangeMaxRoomPower = (event) => {
     this.setState({ maxRoomPower: event.target.value });
   }
-
-  handleChangeSort = (event) => {
-    this.setState({ sort: event.target.value });
+  handleBlurRoomPower = () => {
+    this.handleSearch();
   }
 
-  handleClickSearch = () => {
+  // 並び順
+  handleChangeSort = (event) => {
+    this.setState(
+      {
+        sort: event.target.value
+      }, () => {
+        this.handleSearch();
+      });
+  }
+
+  handleSearch = () => {
     this.setState({
       page: 1,
       pageNumber: "-",
@@ -387,9 +423,9 @@ export class Home extends Component {
                 <Card.Body>
                   <Card.Title>部屋パワー</Card.Title>
                   <Stack direction="horizontal" gap={3}>
-                    <Form.Control type="text" value={this.state.minRoomPower} onChange={(e) => this.handleChangeMinRoomPower(e)} />
+                    <Form.Control type="text" value={this.state.minRoomPower} onChange={(e) => this.handleChangeMinRoomPower(e)} onBlur={() => this.handleBlurRoomPower()} />
                     <span> - </span>
-                    <Form.Control type="text" value={this.state.maxRoomPower} onChange={(e) => this.handleChangeMaxRoomPower(e)} />
+                    <Form.Control type="text" value={this.state.maxRoomPower} onChange={(e) => this.handleChangeMaxRoomPower(e)} onBlur={() => this.handleBlurRoomPower()} />
                   </Stack>
                 </Card.Body>
               </Card>
@@ -399,19 +435,14 @@ export class Home extends Component {
                 <Card.Body>
                   <Card.Title>並び順</Card.Title>
                   <Form.Select value={this.state.sort} onChange={(e) => this.handleChangeSort(e)}>
-                    <option value="PublishedAt">投稿日</option>
-                    <option value="ViewCount">再生回数</option>
+                    <option value="PublishedAtDesc">最近の投稿</option>
+                    <option value="ViewCountDesc">再生回数</option>
+                    <option value="RoomPowerDesc">部屋パワー</option>
                   </Form.Select>
                 </Card.Body>
               </Card>
             </Col>
           </Row>
-        </Container>
-
-        <Container>
-          <Button variant="primary" type="button" onClick={this.handleClickSearch}>
-            検索
-          </Button>
         </Container>
 
         <Container className="mt-3">

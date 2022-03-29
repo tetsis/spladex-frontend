@@ -1,5 +1,4 @@
 # Splatoon2 Video Index Frontend
-## Architecture
 ```
                  +---------------+
 +----------+     |      +------+ |     +-----+
@@ -7,16 +6,20 @@
 +----------+     |      + -----+ |     +-----+
                  +---------------+
                          |
-                   +-----------+
-                   | Scheduler |
-                   +-----------+
+              +---------------------+
+              |            +------+ |
+              | Scheduler  | Core | |
+              |            + -----+ |
+              +---------------------+
 ```
 
 - Frontend (here)
     - [Repo](https://github.com/tetsis/splatoon2-video-index-frontend)
     - React
+    - Deployed in [vercel](https://vercel.com/)
+        - [page](https://splatoon2-video-index.vercel.app)
 - API
-    - [Repo](https://github.com/tetsis/splatoon2-video-index-api)
+    - [Repo](https://github.com/tetsis/splatoon2-video-index-api) (private)
     - ASP.NET
 - Core
     - [Repo](https://github.com/tetsis/splatoon2-video-index-core)
@@ -24,7 +27,7 @@
 - RDB
     - MySQL
 - Scheduler
-    - [Repo]()
+    - [Repo](https://github.com/tetsis/splatoon2-video-index-scheduler)
     - C#
     - Azure functions
 
