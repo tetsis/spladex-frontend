@@ -49,7 +49,7 @@ export class Header extends Component {
       <>
         <Navbar bg="light">
           <Container>
-            <Navbar.Brand href="/">スプラトゥーン2動画索引</Navbar.Brand>
+            <Navbar.Brand href="/">Spladex （スプラトゥーン2動画索引）</Navbar.Brand>
             <Navbar.Collapse className="justify-content-end">
               <Nav>
                 <Nav.Link href="/history">
